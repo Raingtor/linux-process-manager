@@ -7,9 +7,9 @@
 
 class UtilMethods {
 public:
-    std::vector<User> initUsers();
+    static std::vector<User> initUsers();
 
-    std::vector<Program> initPrograms();
+    static std::vector<Program> initPrograms();
 };
 
 #endif

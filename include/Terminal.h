@@ -25,6 +25,8 @@ public:
 
     Terminal(size_t id_, TerminalState terminalState_);
 
+    size_t getId();
+
     TerminalState getTerminalState();
 
     std::vector<User> getUsers();

@@ -13,6 +13,18 @@ enum TerminalState {
     Offline
 };
 
+enum Command {
+    GetTerminalState,
+    GetPrograms,
+    InstallProgram,
+    UpdateProgram,
+    ReinstallProgram,
+    GetUsers,
+    AddUser,
+    RemoveUser,
+    SetTerminalState
+};
+
 class Utils {
 private:
     inline static pthread_mutex_t adminMutex;

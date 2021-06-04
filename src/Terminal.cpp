@@ -11,6 +11,10 @@ Terminal::Terminal(size_t id_, TerminalState terminalState_) {
     terminalPipePath = "./terminal" + std::to_string(id);
 }
 
+size_t Terminal::getId() {
+    return id;
+}
+
 TerminalState Terminal::getTerminalState() {
     return terminalState;
 }
