@@ -50,6 +50,10 @@ public:
     void removeUser(std::string name);
 
     void setTerminalState(TerminalState state);
+
+    void writeToPipe(Data data);
+
+    void readFromPipe();
 };
 
 #endif

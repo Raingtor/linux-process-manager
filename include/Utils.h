@@ -25,6 +25,11 @@ enum Command {
     SetTerminalState
 };
 
+struct Data {
+    Command command;
+    std::string info;
+};
+
 class Utils {
 private:
     inline static pthread_mutex_t adminMutex;
