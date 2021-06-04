@@ -1,13 +1,5 @@
 #include "../include/Utils.h"
 
-pthread_mutex_t Utils::getAdminMutex() {
-    return adminMutex;
-}
-
-pthread_mutex_t Utils::getTerminalMutex() {
-    return terminalMutex;
-}
-
 std::string Utils::userPrivilegeToString(UserPrivilege userPrivilege) {
     switch (userPrivilege) {
         case Admin_:

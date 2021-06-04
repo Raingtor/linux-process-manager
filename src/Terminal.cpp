@@ -126,17 +126,21 @@ void Terminal::setTerminalState(TerminalState state) {
 }
 
 void Terminal::writeToPipe(Data data) {
+    pthread_mutex_lock(&Utils::adminMutex);
     int file = open(adminPipePath.c_str(), O_WRONLY);
     write(file, &data, sizeof(data));
     close(file);
+    pthread_mutex_unlock(&Utils::adminMutex);
 }
 
 void Terminal::readFromPipe() {
     while (terminalState == Online) {
         Data data;
+        pthread_mutex_lock(&Utils::terminalMutex);
         int file = open(terminalPipePath.c_str(), O_RDONLY);
         ssize_t size = read(file, &data, sizeof(data));
         if (size != sizeof(Data)) {
+            pthread_mutex_unlock(&Utils::terminalMutex);
             continue;
         } else {
             switch (data.command) {

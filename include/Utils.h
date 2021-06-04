@@ -31,15 +31,10 @@ struct Data {
 };
 
 class Utils {
-private:
+public:
     inline static pthread_mutex_t adminMutex;
 
     inline static pthread_mutex_t terminalMutex;
-
-public:
-    static pthread_mutex_t getAdminMutex();
-
-    static pthread_mutex_t getTerminalMutex();
 
     static std::string userPrivilegeToString(UserPrivilege userPrivilege);
 
