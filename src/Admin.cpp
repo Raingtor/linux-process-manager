@@ -25,6 +25,7 @@ void Admin::setCurrentTerminal(size_t currentTerminal_) {
     currentTerminal = currentTerminal_;
     terminalPipePath = "./terminal" + std::to_string(currentTerminal);
     mkfifo(terminalPipePath.c_str(), 0666);
+    terminals[currentTerminal].start();
 }
 
 void Admin::getTerminalState() {

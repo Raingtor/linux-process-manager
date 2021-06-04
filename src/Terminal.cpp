@@ -11,6 +11,10 @@ Terminal::Terminal(size_t id_, TerminalState terminalState_) {
     terminalPipePath = "./terminal" + std::to_string(id);
 }
 
+void Terminal::start() {
+    readFromPipe();
+}
+
 size_t Terminal::getId() {
     return id;
 }
@@ -130,7 +134,7 @@ void Terminal::writeToPipe(Data data) {
 void Terminal::readFromPipe() {
     while (terminalState == Online) {
         Data data;
-        int file = open(adminPipePath.c_str(), O_RDONLY);
+        int file = open(terminalPipePath.c_str(), O_RDONLY);
         ssize_t size = read(file, &data, sizeof(data));
         if (size != sizeof(Data)) {
             continue;

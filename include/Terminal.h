@@ -26,6 +26,8 @@ public:
 
     Terminal(size_t id_, TerminalState terminalState_);
 
+    void start();
+
     size_t getId();
 
     void getTerminalState();
