@@ -5,6 +5,7 @@
 #include "User.h"
 #include "Program.h"
 #include "Utils.h"
+#include "UtilMethods.h"
 
 class Terminal {
 private:
@@ -27,11 +28,29 @@ public:
 
     size_t getId();
 
-    TerminalState getTerminalState();
+    void getTerminalState();
 
-    std::vector<User> getUsers();
+    void getUsers();
 
-    std::vector<Program> getPrograms();
+    void getPrograms();
+
+    void installProgram(std::string name);
+
+    void updateProgram(std::string name);
+
+    void reinstallProgram(std::string name);
+
+    void getTerminalUsers();
+
+    void addUser(std::string name);
+
+    void removeUser(std::string name);
+
+    void setTerminalState(TerminalState state);
+
+    void writeToPipe(Data data);
+
+    void readFromPipe();
 };
 
 #endif

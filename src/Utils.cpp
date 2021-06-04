@@ -29,3 +29,11 @@ std::string Utils::terminalStateToString(TerminalState terminalState) {
             return "";
     }
 }
+
+TerminalState Utils::stringToTerminalState(std::string state) {
+    if (state == "Online") {
+        return Online;
+    } else {
+        return Offline;
+    }
+}

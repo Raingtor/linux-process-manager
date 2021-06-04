@@ -44,6 +44,8 @@ public:
     static std::string userPrivilegeToString(UserPrivilege userPrivilege);
 
     static std::string terminalStateToString(TerminalState terminalState);
+
+    static TerminalState stringToTerminalState(std::string state);
 };
 
 #endif
