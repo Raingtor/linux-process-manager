@@ -13,6 +13,7 @@ void UI::startMenu() {
     switch (choice) {
         case 1:
             admin.getTerminalsState();
+            sleep(1);
             startMenu();
             break;
         case 2:
@@ -54,6 +55,7 @@ void UI::workWithTerminal() {
             editTerminal();
             break;
         case 4:
+            sleep(1);
             startMenu();
             break;
         case 5:
@@ -94,6 +96,7 @@ void UI::editPrograms() {
             editPrograms();
             break;
         case 5:
+            sleep(1);
             startMenu();
             break;
         case 6:
@@ -149,6 +152,8 @@ void UI::editTerminal() {
             break;
         case 4:
             setTerminalState();
+            sleep(1);
+            editTerminal();
             break;
         case 5:
             chooseTerminal();
@@ -156,6 +161,7 @@ void UI::editTerminal() {
             editTerminal();
             break;
         case 6:
+            sleep(1);
             startMenu();
             break;
         case 7:

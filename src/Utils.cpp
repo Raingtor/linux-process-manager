@@ -6,9 +6,8 @@ std::string Utils::userPrivilegeToString(UserPrivilege userPrivilege) {
             return "Admin";
         case User_:
             return "User";
-        default:
-            return "";
     }
+    return "";
 }
 
 std::string Utils::terminalStateToString(TerminalState terminalState) {
@@ -17,12 +16,11 @@ std::string Utils::terminalStateToString(TerminalState terminalState) {
             return "Online";
         case Offline:
             return "Offline";
-        default:
-            return "";
     }
+    return "";
 }
 
-TerminalState Utils::stringToTerminalState(std::string state) {
+TerminalState Utils::stringToTerminalState(const std::string& state) {
     if (state == "Online") {
         return Online;
     } else {

@@ -9,6 +9,7 @@ Terminal::Terminal(size_t id_, TerminalState terminalState_) {
     terminalState = terminalState_;
     adminPipePath = "./admin";
     terminalPipePath = "./terminal" + std::to_string(id);
+    logFilePath = "./logTerminal" + std::to_string(id);
 }
 
 void Terminal::start() {
@@ -22,8 +23,13 @@ size_t Terminal::getId() {
 void Terminal::getTerminalState() {
     Data data;
     memset(&data, 0, sizeof(data));
-    strcpy(data.buffer, Utils::terminalStateToString(terminalState).c_str());
+    std::string message = std::to_string(getId()) + " " + Utils::terminalStateToString(terminalState);
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
+}
+
+bool Terminal::getActive() {
+    return active;
 }
 
 void Terminal::setActive(bool active_) {
@@ -44,12 +50,16 @@ void Terminal::getUsers() {
 void Terminal::getPrograms() {
     std::string message;
     for (int i = 0; i < programs.size(); i++) {
-        message += programs[i].getName() + " " + Utils::userPrivilegeToString(users[i].getUserPrivilege()) + "\n";
+        message += programs[i].getName() + " " + Utils::userPrivilegeToString(programs[i].getUserPrivilege()) + "\n";
     }
     Data data;
     memset(&data, 0, sizeof(data));
     strcpy(data.buffer, message.c_str());
     writeToPipe(data);
+}
+
+std::string Terminal::getLogFilePath() {
+    return logFilePath;
 }
 
 void Terminal::installProgram(std::string name) {
@@ -160,37 +170,50 @@ void* Terminal::readFromPipe(void *arg) {
             pthread_mutex_unlock(&Utils::terminalMutex);
             continue;
         } else {
+            std::string message;
             switch (data.command) {
                 case GetTerminalState:
+                    message = "Получение состояния терминала.";
                     terminal->getTerminalState();
                     break;
                 case GetPrograms:
+                    message = "Полученаие списка ПО.";
                     terminal->getPrograms();
                     break;
                 case InstallProgram:
+                    message = "Добавление ПО " + std::string(data.buffer) + ".";
                     terminal->installProgram(data.buffer);
                     break;
                 case UpdateProgram:
+                    message = "Обновление ПО " + std::string(data.buffer) + ".";
                     terminal->updateProgram(data.buffer);
                     break;
                 case ReinstallProgram:
+                    message = "Удаление ПО " + std::string(data.buffer) + ".";
                     terminal->reinstallProgram(data.buffer);
                     break;
                 case GetUsers:
+                    message = "Получение списка пользователей.";
                     terminal->getUsers();
                     break;
                 case AddUser:
+                    message = "Добавление пользователя " + std::string(data.buffer) + ".";
                     terminal->addUser(data.buffer);
                     break;
                 case RemoveUser:
+                    message = "Удаление пользователя " + std::string(data.buffer) + ".";
                     terminal->removeUser(data.buffer);
                     break;
                 case SetTerminalState:
+                    message = "Изменение состояния терминала на " + std::string(data.buffer) + ".";
                     terminal->setTerminalState(Utils::stringToTerminalState(data.buffer));
                     break;
                 default:
                     continue;
             }
+            std::ofstream logFile (terminal->logFilePath.c_str(), std::ofstream::app);
+            logFile << message << std::endl;
+            logFile.close();
             pthread_mutex_unlock(&Utils::terminalMutex);
         }
     }

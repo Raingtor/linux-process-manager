@@ -15,7 +15,7 @@ private:
 
     std::vector<Terminal> terminals;
 
-    size_t currentTerminal;
+    size_t currentTerminal = 0;
 
     std::string adminPipePath;
 

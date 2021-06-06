@@ -40,7 +40,7 @@ public:
 
     static std::string terminalStateToString(TerminalState terminalState);
 
-    static TerminalState stringToTerminalState(std::string state);
+    static TerminalState stringToTerminalState(const std::string& state);
 };
 
 #endif

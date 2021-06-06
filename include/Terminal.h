@@ -25,6 +25,8 @@ private:
 
     pthread_t thread;
 
+    std::string logFilePath;
+
 public:
     Terminal();
 
@@ -38,9 +40,13 @@ public:
 
     void setActive(bool active_);
 
+    bool getActive();
+
     void getUsers();
 
     void getPrograms();
+
+    std::string getLogFilePath();
 
     void installProgram(std::string name);
 

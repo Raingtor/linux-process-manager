@@ -5,6 +5,10 @@ Admin::Admin() {
     programs = UtilMethods::initPrograms();
     terminals.push_back(Terminal(0, Online));
     terminals.push_back(Terminal(1, Offline));
+    for (int i = 0; i < terminals.size(); i++) {
+        std::ofstream logFile(terminals[i].getLogFilePath(), std::ios::trunc);
+        logFile.close();
+    }
     adminPipePath = "./admin";
     unlink(adminPipePath.c_str());
     mkfifo(adminPipePath.c_str(), 0666);
@@ -47,7 +51,7 @@ void Admin::getTerminalState() {
 
 void Admin::getTerminalsState() {
     for (int i = 0; i < terminals.size(); i++) {
-        currentTerminal = terminals[i].getId();
+        setCurrentTerminal(terminals[i].getId());
         getTerminalState();
     }
 }
