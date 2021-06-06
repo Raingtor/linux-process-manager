@@ -14,8 +14,6 @@ private:
 public:
     void start();
 
-    void exit();
-
     void startMenu();
 
     void chooseTerminal();

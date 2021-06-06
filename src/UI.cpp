@@ -13,18 +13,16 @@ void UI::startMenu() {
     switch (choice) {
         case 1:
             admin.getTerminalsState();
+            break;
         case 2:
             chooseTerminal();
+            break;
         case 3:
-            exit();
+            exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
             startMenu();
     }
-}
-
-void UI::exit() {
-    ::exit(0);
 }
 
 void UI::chooseTerminal() {
@@ -44,14 +42,18 @@ void UI::workWithTerminal() {
     switch (choice) {
         case 1:
             admin.getTerminalState();
+            break;
         case 2:
             editPrograms();
+            break;
         case 3:
             editTerminal();
+            break;
         case 4:
             startMenu();
+            break;
         case 5:
-            exit();
+            exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
             workWithTerminal();
@@ -69,16 +71,21 @@ void UI::editPrograms() {
     switch (choice) {
         case 1:
             admin.getTerminalPrograms();
+            break;
         case 2:
             installProgram();
+            break;
         case 3:
             updateProgram();
+            break;
         case 4:
             reinstallProgram();
+            break;
         case 5:
             startMenu();
+            break;
         case 6:
-            exit();
+            exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
             workWithTerminal();
@@ -115,16 +122,21 @@ void UI::editTerminal() {
     switch (choice) {
         case 1:
             admin.getTerminalUsers();
+            break;
         case 2:
             addUser();
+            break;
         case 3:
             removeUser();
+            break;
         case 4:
             chooseTerminal();
+            break;
         case 5:
             startMenu();
+            break;
         case 6:
-            exit();
+            exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
             workWithTerminal();
@@ -151,8 +163,10 @@ void UI::setTerminalState() {
     switch (programChoice) {
         case 1:
             state = Online;
+            break;
         case 2:
             state = Offline;
+            break;
         default:
             std::cout << "Нераспознанная команда." << std::endl;
             setTerminalState();
@@ -185,4 +199,5 @@ int UI::input() {
     std::cout << ">> ";
     int index;
     std::cin >> index;
+    return index;
 }

@@ -1,6 +1,6 @@
-#include <iostream>
+#include "include/UI.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    UI().start();
     return 0;
 }
