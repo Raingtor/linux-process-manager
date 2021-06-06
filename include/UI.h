@@ -12,6 +12,8 @@ private:
     Admin admin;
 
 public:
+    UI();
+
     void start();
 
     void startMenu();

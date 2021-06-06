@@ -26,6 +26,8 @@ private:
 public:
     Admin();
 
+    void start();
+
     std::vector<User> getUsers();
 
     std::vector<Program> getPrograms();

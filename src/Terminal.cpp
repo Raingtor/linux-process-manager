@@ -173,45 +173,45 @@ void* Terminal::readFromPipe(void *arg) {
             std::string message;
             switch (data.command) {
                 case GetTerminalState:
-                    message = "Получение состояния терминала.";
+                    message = "Запрос на получение состояния терминала.";
                     terminal->getTerminalState();
                     break;
                 case GetPrograms:
-                    message = "Полученаие списка ПО.";
+                    message = "Запрос на полученаие списка ПО.";
                     terminal->getPrograms();
                     break;
                 case InstallProgram:
-                    message = "Добавление ПО " + std::string(data.buffer) + ".";
+                    message = "Запрос на добавление ПО " + std::string(data.buffer) + ".";
                     terminal->installProgram(data.buffer);
                     break;
                 case UpdateProgram:
-                    message = "Обновление ПО " + std::string(data.buffer) + ".";
+                    message = "Запрос на обновление ПО " + std::string(data.buffer) + ".";
                     terminal->updateProgram(data.buffer);
                     break;
                 case ReinstallProgram:
-                    message = "Удаление ПО " + std::string(data.buffer) + ".";
+                    message = "Запрос на удаление ПО " + std::string(data.buffer) + ".";
                     terminal->reinstallProgram(data.buffer);
                     break;
                 case GetUsers:
-                    message = "Получение списка пользователей.";
+                    message = "Запрос на получение списка пользователей.";
                     terminal->getUsers();
                     break;
                 case AddUser:
-                    message = "Добавление пользователя " + std::string(data.buffer) + ".";
+                    message = "Запрос на добавление пользователя " + std::string(data.buffer) + ".";
                     terminal->addUser(data.buffer);
                     break;
                 case RemoveUser:
-                    message = "Удаление пользователя " + std::string(data.buffer) + ".";
+                    message = "Запрос на удаление пользователя " + std::string(data.buffer) + ".";
                     terminal->removeUser(data.buffer);
                     break;
                 case SetTerminalState:
-                    message = "Изменение состояния терминала на " + std::string(data.buffer) + ".";
+                    message = "Запрос на изменение состояния терминала на " + std::string(data.buffer) + ".";
                     terminal->setTerminalState(Utils::stringToTerminalState(data.buffer));
                     break;
                 default:
                     continue;
             }
-            std::ofstream logFile (terminal->logFilePath.c_str(), std::ofstream::app);
+            std::ofstream logFile(terminal->logFilePath.c_str(), std::ofstream::app);
             logFile << message << std::endl;
             logFile.close();
             pthread_mutex_unlock(&Utils::terminalMutex);

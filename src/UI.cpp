@@ -1,7 +1,11 @@
 #include "../include/UI.h"
 
+UI::UI() {
+
+}
+
 void UI::start() {
-    admin = Admin();
+    admin.start();
     startMenu();
 }
 
