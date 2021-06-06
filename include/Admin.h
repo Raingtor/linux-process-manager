@@ -20,6 +20,9 @@ private:
     std::string adminPipePath;
 
     std::string terminalPipePath;
+
+    pthread_t thread;
+
 public:
     Admin();
 
@@ -28,6 +31,8 @@ public:
     std::vector<Program> getPrograms();
 
     std::vector<Terminal> getTerminals();
+
+    size_t getCurrentTerminal();
 
     void setCurrentTerminal(size_t currentTerminal_);
 
@@ -53,7 +58,7 @@ public:
 
     void writeToPipe(Data data);
 
-    void readFromPipe();
+    static void* readFromPipe(void *arg);
 };
 
 #endif

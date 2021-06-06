@@ -12,7 +12,7 @@ Terminal::Terminal(size_t id_, TerminalState terminalState_) {
 }
 
 void Terminal::start() {
-    readFromPipe();
+    pthread_create(&thread, nullptr, Terminal::readFromPipe, this);
 }
 
 size_t Terminal::getId() {
@@ -21,9 +21,13 @@ size_t Terminal::getId() {
 
 void Terminal::getTerminalState() {
     Data data;
-    data.info = Utils::terminalStateToString(terminalState);
+    memset(&data, 0, sizeof(data));
+    strcpy(data.buffer, Utils::terminalStateToString(terminalState).c_str());
     writeToPipe(data);
-    readFromPipe();
+}
+
+void Terminal::setActive(bool active_) {
+    active = active_;
 }
 
 void Terminal::getUsers() {
@@ -32,9 +36,9 @@ void Terminal::getUsers() {
         message += users[i].getName() + " " + Utils::userPrivilegeToString(users[i].getUserPrivilege()) + "\n";
     }
     Data data;
-    data.info = message;
+    memset(&data, 0, sizeof(data));
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::getPrograms() {
@@ -43,68 +47,78 @@ void Terminal::getPrograms() {
         message += programs[i].getName() + " " + Utils::userPrivilegeToString(users[i].getUserPrivilege()) + "\n";
     }
     Data data;
-    data.info = message;
+    memset(&data, 0, sizeof(data));
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::installProgram(std::string name) {
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string message;
     if (UtilMethods::inVector(programs, name)) {
-        data.info = "Программа уже установлена.\n";
+        message = "Программа уже установлена.\n";
     } else {
         programs.push_back(UtilMethods::findProgramByName(programs, name));
-        data.info = "Программа установлена.\n";
+        message = "Программа установлена.\n";
     }
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::updateProgram(std::string name) {
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string message;
     if (UtilMethods::inVector(programs, name)) {
-        data.info = "Программа обновлена.\n";
+        message = "Программа обновлена.\n";
     } else {
-        data.info = "Программа еще не установлена.\n";
+        message = "Программа еще не установлена.\n";
     }
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::reinstallProgram(std::string name) {
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string message;
     if (UtilMethods::inVector(programs, name)) {
-        data.info = "Программа удалена.\n";
+        message = "Программа удалена.\n";
         programs.erase(programs.begin() + UtilMethods::findProgramIndex(programs, name));
     } else {
-        data.info = "Программа еще не установлена.\n";
+        message = "Программа еще не установлена.\n";
     }
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::addUser(std::string name) {
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string message;
     if (UtilMethods::inVector(users, name)) {
-        data.info = "Пользователь уже есть в списке.\n";
+        message = "Пользователь уже есть в списке.\n";
     } else {
         users.push_back(UtilMethods::findUserByName(users, name));
-        data.info = "Пользователь добавлен в список.\n";
+        message = "Пользователь добавлен в список.\n";
     }
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::removeUser(std::string name) {
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string message;
     if (UtilMethods::inVector(users, name)) {
-        data.info = "Пользователь удален.\n";
+        message = "Пользователь удален.\n";
         users.erase(users.begin() + UtilMethods::findUserIndex(users, name));
     } else {
-        data.info = "Пользователя еще нет в списке.\n";
+        message = "Пользователя еще нет в списке.\n";
     }
+    strcpy(data.buffer, message.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::setTerminalState(TerminalState state) {
@@ -115,14 +129,16 @@ void Terminal::setTerminalState(TerminalState state) {
         message = "выключен.";
     }
     Data data;
+    memset(&data, 0, sizeof(data));
+    std::string finalMessage;
     if (state != terminalState) {
-        data.info = "Терминал " + message;
+        finalMessage = "Терминал " + message;
         terminalState = state;
     } else {
-        data.info = "Терминал уже " + message;
+        finalMessage = "Терминал уже " + message;
     }
+    strcpy(data.buffer, finalMessage.c_str());
     writeToPipe(data);
-    readFromPipe();
 }
 
 void Terminal::writeToPipe(Data data) {
@@ -133,11 +149,12 @@ void Terminal::writeToPipe(Data data) {
     pthread_mutex_unlock(&Utils::adminMutex);
 }
 
-void Terminal::readFromPipe() {
-    while (terminalState == Online) {
+void* Terminal::readFromPipe(void *arg) {
+    Terminal *terminal = reinterpret_cast<Terminal *>(arg);
+    int file = open(terminal->terminalPipePath.c_str(), O_RDONLY);
+    while (terminal->active) {
         Data data;
         pthread_mutex_lock(&Utils::terminalMutex);
-        int file = open(terminalPipePath.c_str(), O_RDONLY);
         ssize_t size = read(file, &data, sizeof(data));
         if (size != sizeof(Data)) {
             pthread_mutex_unlock(&Utils::terminalMutex);
@@ -145,26 +162,37 @@ void Terminal::readFromPipe() {
         } else {
             switch (data.command) {
                 case GetTerminalState:
-                    getTerminalState();
+                    terminal->getTerminalState();
+                    break;
                 case GetPrograms:
-                    getPrograms();
+                    terminal->getPrograms();
+                    break;
                 case InstallProgram:
-                    installProgram(data.info);
+                    terminal->installProgram(data.buffer);
+                    break;
                 case UpdateProgram:
-                    updateProgram(data.info);
+                    terminal->updateProgram(data.buffer);
+                    break;
                 case ReinstallProgram:
-                    reinstallProgram(data.info);
+                    terminal->reinstallProgram(data.buffer);
+                    break;
                 case GetUsers:
-                    getUsers();
+                    terminal->getUsers();
+                    break;
                 case AddUser:
-                    addUser(data.info);
+                    terminal->addUser(data.buffer);
+                    break;
                 case RemoveUser:
-                    removeUser(data.info);
+                    terminal->removeUser(data.buffer);
+                    break;
                 case SetTerminalState:
-                    setTerminalState(Utils::stringToTerminalState(data.info));
+                    terminal->setTerminalState(Utils::stringToTerminalState(data.buffer));
+                    break;
                 default:
                     continue;
             }
+            pthread_mutex_unlock(&Utils::terminalMutex);
         }
     }
+    close(file);
 }

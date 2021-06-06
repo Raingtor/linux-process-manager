@@ -13,6 +13,7 @@ void UI::startMenu() {
     switch (choice) {
         case 1:
             admin.getTerminalsState();
+            startMenu();
             break;
         case 2:
             chooseTerminal();
@@ -28,6 +29,7 @@ void UI::startMenu() {
 void UI::chooseTerminal() {
     showTerminals();
     int choice = input();
+    admin.getTerminals()[admin.getCurrentTerminal()].setActive(false);
     admin.setCurrentTerminal(admin.getTerminals()[choice].getId());
     workWithTerminal();
 }
@@ -42,6 +44,8 @@ void UI::workWithTerminal() {
     switch (choice) {
         case 1:
             admin.getTerminalState();
+            sleep(1);
+            workWithTerminal();
             break;
         case 2:
             editPrograms();
@@ -71,15 +75,23 @@ void UI::editPrograms() {
     switch (choice) {
         case 1:
             admin.getTerminalPrograms();
+            sleep(1);
+            editPrograms();
             break;
         case 2:
             installProgram();
+            sleep(1);
+            editPrograms();
             break;
         case 3:
             updateProgram();
+            sleep(1);
+            editPrograms();
             break;
         case 4:
             reinstallProgram();
+            sleep(1);
+            editPrograms();
             break;
         case 5:
             startMenu();
@@ -115,27 +127,38 @@ void UI::editTerminal() {
     std::cout << "2. Добавить пользователя." << std::endl;
     std::cout << "3. Удалить пользователя." << std::endl;
     std::cout << "4. Изменить состояние терминала." << std::endl;
-    std::cout << "4. Выбрать другой терминал." << std::endl;
-    std::cout << "5. Вернуться в меню." << std::endl;
-    std::cout << "6. Выход." << std::endl;
+    std::cout << "5. Выбрать другой терминал." << std::endl;
+    std::cout << "6. Вернуться в меню." << std::endl;
+    std::cout << "7. Выход." << std::endl;
     int choice = input();
     switch (choice) {
         case 1:
             admin.getTerminalUsers();
+            sleep(1);
+            editTerminal();
             break;
         case 2:
             addUser();
+            sleep(1);
+            editTerminal();
             break;
         case 3:
             removeUser();
+            sleep(1);
+            editTerminal();
             break;
         case 4:
-            chooseTerminal();
+            setTerminalState();
             break;
         case 5:
-            startMenu();
+            chooseTerminal();
+            sleep(1);
+            editTerminal();
             break;
         case 6:
+            startMenu();
+            break;
+        case 7:
             exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;

@@ -13,6 +13,8 @@ private:
 
     TerminalState terminalState;
 
+    bool active = false;
+
     std::vector<User> users;
 
     std::vector<Program> programs;
@@ -20,6 +22,8 @@ private:
     std::string adminPipePath;
 
     std::string terminalPipePath;
+
+    pthread_t thread;
 
 public:
     Terminal();
@@ -32,6 +36,8 @@ public:
 
     void getTerminalState();
 
+    void setActive(bool active_);
+
     void getUsers();
 
     void getPrograms();
@@ -42,8 +48,6 @@ public:
 
     void reinstallProgram(std::string name);
 
-    void getTerminalUsers();
-
     void addUser(std::string name);
 
     void removeUser(std::string name);
@@ -52,7 +56,7 @@ public:
 
     void writeToPipe(Data data);
 
-    void readFromPipe();
+    static void* readFromPipe(void *arg);
 };
 
 #endif

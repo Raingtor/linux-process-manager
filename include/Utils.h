@@ -27,7 +27,7 @@ enum Command {
 
 struct Data {
     Command command;
-    std::string info;
+    char buffer[512];
 };
 
 class Utils {
