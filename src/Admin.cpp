@@ -52,10 +52,12 @@ void Admin::getTerminalState() {
     writeToPipe(data);
 }
 
-void Admin::getTerminalsState() {
+void Admin::getTerminalsInfo() {
     for (int i = 0; i < terminals.size(); i++) {
         setCurrentTerminal(terminals[i].getId());
         getTerminalState();
+        getTerminalUsers();
+        getTerminalPrograms();
     }
 }
 

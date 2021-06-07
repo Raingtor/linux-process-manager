@@ -40,7 +40,7 @@ public:
 
     void getTerminalState();
 
-    void getTerminalsState();
+    void getTerminalsInfo();
 
     void getTerminalPrograms();
 

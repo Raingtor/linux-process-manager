@@ -69,7 +69,7 @@ void Terminal::installProgram(std::string name) {
     if (UtilMethods::inVector(programs, name)) {
         message = "Программа уже установлена.\n";
     } else {
-        programs.push_back(UtilMethods::findProgramByName(programs, name));
+        programs.push_back(UtilMethods::findProgramByName(UtilMethods::initPrograms(), name));
         message = "Программа установлена.\n";
     }
     strcpy(data.buffer, message.c_str());
@@ -110,7 +110,7 @@ void Terminal::addUser(std::string name) {
     if (UtilMethods::inVector(users, name)) {
         message = "Пользователь уже есть в списке.\n";
     } else {
-        users.push_back(UtilMethods::findUserByName(users, name));
+        users.push_back(UtilMethods::findUserByName(UtilMethods::initUsers(), name));
         message = "Пользователь добавлен в список.\n";
     }
     strcpy(data.buffer, message.c_str());
@@ -177,7 +177,7 @@ void* Terminal::readFromPipe(void *arg) {
                     terminal->getTerminalState();
                     break;
                 case GetPrograms:
-                    message = "Запрос на полученаие списка ПО.";
+                    message = "Запрос на получение списка ПО.";
                     terminal->getPrograms();
                     break;
                 case InstallProgram:
