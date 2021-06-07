@@ -34,9 +34,9 @@ public:
 
     std::vector<Terminal> getTerminals();
 
-    size_t getCurrentTerminal();
-
     void setCurrentTerminal(size_t currentTerminal_);
+
+    void stopTerminal();
 
     void getTerminalState();
 

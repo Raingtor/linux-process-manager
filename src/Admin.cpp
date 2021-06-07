@@ -32,17 +32,25 @@ std::vector<Terminal> Admin::getTerminals() {
     return terminals;
 }
 
-size_t Admin::getCurrentTerminal() {
-    return currentTerminal;
-}
-
 void Admin::setCurrentTerminal(size_t currentTerminal_) {
+    for (int i = 0; i < terminals.size(); i++) {
+        if (terminals[i].getActive()) {
+            terminalPipePath = "./terminal" + std::to_string(i);
+            stopTerminal();
+        }
+    }
     currentTerminal = currentTerminal_;
     terminalPipePath = "./terminal" + std::to_string(currentTerminal);
     unlink(terminalPipePath.c_str());
     mkfifo(terminalPipePath.c_str(), 0666);
-    terminals[currentTerminal].setActive(true);
     terminals[currentTerminal].start();
+}
+
+void Admin::stopTerminal() {
+    Data data;
+    memset(&data, 0, sizeof(data));
+    data.command = StopTerminal;
+    writeToPipe(data);
 }
 
 void Admin::getTerminalState() {

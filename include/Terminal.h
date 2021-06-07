@@ -34,11 +34,11 @@ public:
 
     void start();
 
+    void stop();
+
     size_t getId();
 
     void getTerminalState();
-
-    void setActive(bool active_);
 
     bool getActive();
 

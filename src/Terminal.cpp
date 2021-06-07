@@ -14,6 +14,10 @@ Terminal::Terminal(size_t id_, TerminalState terminalState_) {
 
 void Terminal::start() {
     pthread_create(&thread, nullptr, Terminal::readFromPipe, this);
+    std::ofstream logFile(logFilePath.c_str(), std::ofstream::app);
+    logFile << "Начата работа с терминалом." << std::endl;
+    logFile.close();
+    active = true;
 }
 
 size_t Terminal::getId() {
@@ -30,10 +34,6 @@ void Terminal::getTerminalState() {
 
 bool Terminal::getActive() {
     return active;
-}
-
-void Terminal::setActive(bool active_) {
-    active = active_;
 }
 
 void Terminal::getUsers() {
@@ -159,7 +159,7 @@ void Terminal::writeToPipe(Data data) {
     pthread_mutex_unlock(&Utils::adminMutex);
 }
 
-void* Terminal::readFromPipe(void *arg) {
+void *Terminal::readFromPipe(void *arg) {
     Terminal *terminal = reinterpret_cast<Terminal *>(arg);
     int file = open(terminal->terminalPipePath.c_str(), O_RDONLY);
     while (terminal->active) {
@@ -169,6 +169,10 @@ void* Terminal::readFromPipe(void *arg) {
         if (size != sizeof(Data)) {
             pthread_mutex_unlock(&Utils::terminalMutex);
             continue;
+        } else if (data.command == StopTerminal) {
+            close(file);
+            pthread_mutex_unlock(&Utils::terminalMutex);
+            terminal->stop();
         } else {
             std::string message;
             switch (data.command) {
@@ -217,5 +221,12 @@ void* Terminal::readFromPipe(void *arg) {
             pthread_mutex_unlock(&Utils::terminalMutex);
         }
     }
-    close(file);
+}
+
+void Terminal::stop() {
+    std::ofstream logFile(logFilePath.c_str(), std::ofstream::app);
+    logFile << "Завершена работа с терминалом." << std::endl;
+    logFile.close();
+    active = false;
+    pthread_cancel(thread);
 }

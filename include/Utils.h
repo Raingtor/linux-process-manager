@@ -22,7 +22,8 @@ enum Command {
     GetUsers,
     AddUser,
     RemoveUser,
-    SetTerminalState
+    SetTerminalState,
+    StopTerminal
 };
 
 struct Data {

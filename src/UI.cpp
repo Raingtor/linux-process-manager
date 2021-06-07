@@ -35,7 +35,6 @@ void UI::startMenu() {
 void UI::chooseTerminal() {
     showTerminals();
     int choice = input();
-    admin.getTerminals()[admin.getCurrentTerminal()].setActive(false);
     admin.setCurrentTerminal(admin.getTerminals()[choice].getId());
     workWithTerminal();
 }
@@ -44,8 +43,9 @@ void UI::workWithTerminal() {
     std::cout << "1. Посмотреть состояние терминала." << std::endl;
     std::cout << "2. Работа с ПО." << std::endl;
     std::cout << "3. Работа с терминалом." << std::endl;
-    std::cout << "4. Вернуться в меню." << std::endl;
-    std::cout << "5. Выход." << std::endl;
+    std::cout << "4. Выбрать другой терминал." << std::endl;
+    std::cout << "5. Вернуться в главное меню." << std::endl;
+    std::cout << "6. Выход." << std::endl;
     int choice = input();
     switch (choice) {
         case 1:
@@ -60,10 +60,15 @@ void UI::workWithTerminal() {
             editTerminal();
             break;
         case 4:
+            chooseTerminal();
+            sleep(1);
+            workWithTerminal();
+            break;
+        case 5:
             sleep(1);
             startMenu();
             break;
-        case 5:
+        case 6:
             exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
@@ -77,9 +82,10 @@ void UI::editPrograms() {
     std::cout << "2. Установить ПО." << std::endl;
     std::cout << "3. Обновить ПО." << std::endl;
     std::cout << "4. Удалить ПО." << std::endl;
-    std::cout << "5. Выбрать другой терминал." << std::endl;
-    std::cout << "6. Вернуться в меню." << std::endl;
-    std::cout << "7. Выход." << std::endl;
+    std::cout << "5. Вернуться в меню терминала." << std::endl;
+    std::cout << "6. Выбрать другой терминал." << std::endl;
+    std::cout << "7. Вернуться в главное меню." << std::endl;
+    std::cout << "8. Выход." << std::endl;
     int choice = input();
     switch (choice) {
         case 1:
@@ -103,15 +109,19 @@ void UI::editPrograms() {
             editPrograms();
             break;
         case 5:
-            chooseTerminal();
             sleep(1);
-            editTerminal();
+            workWithTerminal();
             break;
         case 6:
+            chooseTerminal();
+            sleep(1);
+            editPrograms();
+            break;
+        case 7:
             sleep(1);
             startMenu();
             break;
-        case 7:
+        case 8:
             exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
@@ -143,9 +153,10 @@ void UI::editTerminal() {
     std::cout << "2. Добавить пользователя." << std::endl;
     std::cout << "3. Удалить пользователя." << std::endl;
     std::cout << "4. Изменить состояние терминала." << std::endl;
-    std::cout << "5. Выбрать другой терминал." << std::endl;
-    std::cout << "6. Вернуться в меню." << std::endl;
-    std::cout << "7. Выход." << std::endl;
+    std::cout << "5. Вернуться в меню терминала." << std::endl;
+    std::cout << "6. Выбрать другой терминал." << std::endl;
+    std::cout << "7. Вернуться в главное меню." << std::endl;
+    std::cout << "8. Выход." << std::endl;
     int choice = input();
     switch (choice) {
         case 1:
@@ -169,15 +180,19 @@ void UI::editTerminal() {
             editTerminal();
             break;
         case 5:
+            sleep(1);
+            workWithTerminal();
+            break;
+        case 6:
             chooseTerminal();
             sleep(1);
             editTerminal();
             break;
-        case 6:
+        case 7:
             sleep(1);
             startMenu();
             break;
-        case 7:
+        case 8:
             exit(0);
         default:
             std::cout << "Нераспознанная команда." << std::endl;
