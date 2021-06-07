@@ -10,7 +10,6 @@ Admin::Admin() {
         logFile.close();
     }
     adminPipePath = "./admin";
-    unlink(adminPipePath.c_str());
     mkfifo(adminPipePath.c_str(), 0666);
     pthread_mutex_init(&Utils::adminMutex, nullptr);
     pthread_mutex_init(&Utils::terminalMutex, nullptr);
@@ -154,4 +153,10 @@ void* Admin::readFromPipe(void *arg) {
         pthread_mutex_unlock(&Utils::adminMutex);
     }
     close(file);
+}
+
+Admin::~Admin() {
+    unlink(terminalPipePath.c_str());
+    unlink(adminPipePath.c_str());
+    pthread_cancel(thread);
 }

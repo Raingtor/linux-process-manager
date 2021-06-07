@@ -230,3 +230,7 @@ void Terminal::stop() {
     active = false;
     pthread_cancel(thread);
 }
+
+Terminal::~Terminal() {
+
+}

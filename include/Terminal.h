@@ -63,6 +63,8 @@ public:
     void writeToPipe(Data data);
 
     static void* readFromPipe(void *arg);
+
+    ~Terminal();
 };
 
 #endif
